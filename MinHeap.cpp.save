@@ -1,0 +1,32 @@
+#include <iostream>
+#include <climits>
+
+#include "MinHeap.h"
+
+
+
+//implement the methods in MinHeap.h
+
+MinHeap::MinHeap()
+{
+
+}
+
+void MinHeap::insert(TreeNode * val)
+{
+
+}
+
+int MinHeap::getSize()
+{
+	return myHeap.size();
+}
+
+TreeNode * MinHeap::removeMin()
+{
+
+	return NULL;
+
+}
+
+

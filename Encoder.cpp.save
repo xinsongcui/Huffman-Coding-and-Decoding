@@ -1,0 +1,105 @@
+#include <iostream>
+#include "Encoder.h"
+
+using namespace std;
+
+
+void Encoder::encode(){
+	buildFrequencyTable();
+	MinHeap* mh = new MinHeap();
+	TreeNode* n;
+	for(int i=0;i<256; i++){
+		if(frequency_table[i]!=0){
+			n = new TreeNode(i,frequency_table[i]);
+			mh->insert(n);
+		}
+	}
+	
+	ht = new HuffTree();
+	ht->buildTree(mh);
+	ht->generateCodes();	
+}
+
+void Encoder::writeEncodedFile(string output_file_path){
+
+	//write on file
+	FILE* fOut = fopen(output_file_path.c_str(),"w");
+	FILE* fin = fopen((this->s).c_str(),"r");
+	unsigned int Unichars = 0;
+	fseek(fin,0,SEEK_SET);
+	for(int i=0; i<256; i++){
+		if(ht->getCharCode(i).compare("")!=0){
+			Unichars++;
+		}
+	}
+	fwrite(&Unichars,1,1,fOut);
+	unsigned n;
+	if(Unichars<256){
+		n=0;
+		fwrite(&n,1,1,fOut);
+	}
+	else if(Unichars==256){
+		n=1;
+		fwrite(&n,1,1,fOut);
+	}
+	for(unsigned j=0; j<256; j++){
+		if(ht->getCharCode(j).compare("")!=0){
+			fwrite(&j,1,1,fOut);
+			n = frequency_table[j];
+			int k = 0;
+			while(k<4){
+				unsigned t = n%256;
+				fwrite(&t,1,1,fOut);
+				n/=256;
+				k++;
+			}
+		}
+	}
+	string b1;
+	string b0;
+	unsigned x;
+	unsigned y;
+	while((x=fgetc(fin))!=EOF){
+		b1.append(ht->getCharCode(x));
+		while(b1.length()>=8){
+			b0 = b1.substr(0,8) + b0;
+			y = 0;
+			for(int i=7; i>=0; i--){
+				if(b0[7-i]=='1') y|=(1<<i);
+			}
+			fwrite(&y,1,1,fOut);
+			b1.erase(0,8);
+			b0 = "";
+		}
+	}
+
+	//cout << b1;
+	if(b1.length()>0){
+		while(b1.length()<8){
+			b1=b1+"0";
+		}
+		b0 += b1;
+		y=0;
+		for(int i=7; i>=0; i--){
+			if(b0[7-i]=='1') y|=(1<<i);	
+		}
+		fwrite(&y,1,1,fOut);
+	}
+	 	
+
+	fclose(fin);
+	fclose(fOut);	
+	/*outfile.open(output_file_path, ofstream::binary);
+	int hcount = 0;
+	string sub;
+	while(hcount < huffcode.length()){
+		if((hcount+1)%8 == 0){
+			sub = huffcode.substr(hcount-7,hcount);
+			fwrite(&sub,8,8,fOut);
+		}
+		hcount++;
+	}*/
+			
+	
+	
+}

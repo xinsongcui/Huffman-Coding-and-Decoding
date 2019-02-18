@@ -1,0 +1,57 @@
+#ifndef TREENODE_H
+#define TREENODE_H
+
+#include <string>
+
+using namespace std;
+
+class TreeNode
+{
+	private:
+		TreeNode * left;
+		TreeNode * right;
+		unsigned frequency;
+		unsigned char val;
+	public:
+
+		//TreeNode();
+		TreeNode(unsigned char val, unsigned frequency){
+			val = this->val;
+			frequency = this->frequency;
+		}
+
+		//returns true if this node is a leaf node, returns false otherwise
+		bool isLeafNode(){
+			if (*left==NULL && *right==NULL){
+				return false;
+			}
+			else return true;
+		}
+
+		//puts left as the left child and right as the right child of this node
+		void join(TreeNode * left, TreeNode * right){
+
+		}
+
+		TreeNode * getLeft(){
+			return left;
+		}
+		//returns the left child
+		TreeNode * getRight(){
+			return right;
+		}
+	        //returns the right child
+
+		unsigned getFrequency(){
+			return frequency;
+		}
+		//returns frequency member variable
+
+		unsigned getVal(){
+			return val;
+		}
+		//returns val member variable
+};
+
+
+#endif
